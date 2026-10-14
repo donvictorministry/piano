@@ -1,0 +1,324 @@
+/* Roboto — Android system built-in font, no CDN */
+:root {
+  --font:         'Roboto', sans-serif;
+  --bg:           #f5f5f5;
+  --surface:      #ffffff;
+  --surface2:     #eeeeee;
+  --text:         #212121;
+  --text2:        #616161;
+  --accent:       #455a64;
+  --border:       #bdbdbd;
+  --key-white:    #ffffff;
+  --key-black:    #1a1a1a;
+  --active-white: #bbdefb;
+  --active-black: #1565c0;
+  --chip-bg:      #e0e0e0;
+  --shadow:       rgba(0,0,0,.15);
+  --toast-bg:     rgba(30,30,30,.93);
+  --toast-text:   #ffffff;
+}
+
+[data-theme="dark"] {
+  --bg:           #121212;
+  --surface:      #1e1e1e;
+  --surface2:     #2a2a2a;
+  --text:         #eeeeee;
+  --text2:        #9e9e9e;
+  --accent:       #78909c;
+  --border:       #424242;
+  --key-white:    #f0f0f0;
+  --key-black:    #111111;
+  --active-white: #1565c0;
+  --active-black: #42a5f5;
+  --chip-bg:      #2a2a2a;
+  --shadow:       rgba(0,0,0,.5);
+  --toast-bg:     rgba(230,230,230,.95);
+  --toast-text:   #111111;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 19px;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hidden { display: none !important; }
+
+/* ── Centred Toast ─────────────────────────────────── */
+.toast {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(.85);
+  background: var(--toast-bg);
+  color: var(--toast-text);
+  padding: 16px 32px;
+  border-radius: 40px;
+  font-size: 19px;
+  font-family: var(--font);
+  text-align: center;
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease, transform .22s ease;
+  max-width: 82vw;
+  white-space: pre-wrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ── Lock Screen ───────────────────────────────────── */
+.lock-screen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+}
+
+.lock-card {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 40px 28px 32px;
+  text-align: center;
+  width: 88vw; max-width: 380px;
+  box-shadow: 0 6px 28px var(--shadow);
+}
+
+.lock-icon { font-size: 52px; margin-bottom: 14px; }
+
+.lock-card h2 {
+  font-size: 28px; font-weight: 700;
+  color: var(--text); margin-bottom: 8px;
+}
+
+.lock-card p {
+  font-size: 19px; color: var(--text2);
+  margin-bottom: 22px;
+}
+
+.lock-card input {
+  width: 100%;
+  padding: 14px;
+  font-size: 24px;
+  font-family: var(--font);
+  letter-spacing: 10px;
+  text-align: center;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface2);
+  color: var(--text);
+  margin-bottom: 14px;
+  outline: none;
+  transition: border-color .18s;
+}
+.lock-card input:focus { border-color: var(--accent); }
+
+.lock-card button {
+  width: 100%;
+  padding: 15px;
+  font-size: 19px;
+  font-family: var(--font);
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+/* ── App Shell ─────────────────────────────────────── */
+.app { display: flex; flex-direction: column; min-height: 100dvh; }
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 200;
+}
+
+.app-title { font-size: 26px; font-weight: 700; }
+
+.icon-btn {
+  background: none; border: none;
+  font-size: 26px; cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 10px;
+  line-height: 1;
+}
+
+/* ── Song Section ──────────────────────────────────── */
+.song-section { padding: 16px 14px 6px; }
+
+.input-row { display: flex; gap: 10px; margin-bottom: 12px; }
+
+.input-row input {
+  flex: 1;
+  padding: 13px 14px;
+  font-size: 19px;
+  font-family: var(--font);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color .18s;
+}
+.input-row input:focus { border-color: var(--accent); }
+
+.input-row button,
+.ctrl-btn {
+  padding: 13px 18px;
+  font-size: 19px;
+  font-family: var(--font);
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .15s;
+}
+.input-row button:active,
+.ctrl-btn:active { opacity: .75; }
+
+.ctrl-btn.stop { background: #757575; }
+
+.now-playing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+#song-title { font-size: 19px; font-weight: 600; }
+
+.play-controls { display: flex; gap: 8px; }
+
+.speed-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  color: var(--text2);
+  padding: 4px 0;
+}
+.speed-row input[type="range"] {
+  flex: 1; height: 6px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.speed-row span:last-child {
+  min-width: 46px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── Chips ─────────────────────────────────────────── */
+.chips-section { padding: 10px 14px 6px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip {
+  padding: 9px 18px;
+  font-size: 19px;
+  font-family: var(--font);
+  background: var(--chip-bg);
+  color: var(--text);
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.chip:active { opacity: .65; }
+
+/* ── Piano ─────────────────────────────────────────── */
+.piano-section { padding: 14px 0 0; }
+
+.piano-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 14px 10px;
+}
+
+.piano {
+  position: relative;
+  display: inline-flex;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.white-key {
+  width: 56px; height: 230px;
+  background: var(--key-white);
+  border: 1.5px solid var(--border);
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 10px;
+  cursor: pointer;
+  position: relative; z-index: 1;
+  transition: background .12s;
+  box-shadow: 0 3px 6px var(--shadow);
+  flex-shrink: 0;
+}
+.white-key.active { background: var(--active-white); }
+
+.black-key {
+  width: 38px; height: 148px;
+  background: var(--key-black);
+  border-radius: 0 0 9px 9px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 8px;
+  cursor: pointer;
+  position: absolute; z-index: 2; top: 0;
+  transition: background .12s;
+  box-shadow: 0 4px 10px var(--shadow);
+}
+.black-key.active { background: var(--active-black); }
+
+.key-label {
+  font-size: 11px;
+  color: var(--text2);
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  pointer-events: none;
+}
+.black-key .key-label { color: #888; font-size: 10px; }
+
+/* ── Hint ──────────────────────────────────────────── */
+.hint {
+  text-align: center;
+  font-size: 19px;
+  color: var(--text2);
+  padding: 12px 14px 28px;
+}
