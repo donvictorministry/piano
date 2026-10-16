@@ -3,7 +3,7 @@
   'use strict';
 
   var CONFIG = {
-    ENDPOINT: 'https://script.google.com/macros/s/AKfycbxL0s590nsILqRu3pHfDq3h9NJAUo4Fs65KtJrZzmjwPs38vBfM3GbrGxVZlQhB-dDDkQ/exec',        // Apps Script web app URL (ends with /exec)
+    ENDPOINT: 'https://script.google.com/macros/s/AKfycbxL0s590nsILqRu3pHfDq3h9NJAUo4Fs65KtJrZzmjwPs38vBfM3GbrGxVZlQhB-dDDkQ/exec',    
     STATUS_CSV: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR56DgPzQNm5SJ7j1N3u2LE81FEwI2b9rIZfJny5XhyfERtqW57ODjiLH6HdO-MRsN-wZlUb7jAH4bM/pub?gid=1497147489&single=true&output=csv', 
     GATE_ID: 'APP-001',                             
     PREFIX_OBF: 'ODg3Nw==',
