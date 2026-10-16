@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const CORRECT_PIN = 'aA4b';       // ← CHANGE THIS
+  const CORRECT_PIN = '2271';       // ← CHANGE THIS
   const STORAGE_KEY = 'pianobar-auth';
   const SESSION_HRS = 24;
 
