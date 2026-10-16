@@ -1,5 +1,5 @@
 /* sw.js — cache-first service worker, offline-ready */
-const CACHE  = 'pianobar-v1';
+const CACHE  = 'pianobar-v2';
 const ASSETS = [
   './',
   './index.html',
