@@ -1,6 +1,6 @@
 {
-  "name": "PianoBar",
-  "short_name": "PianoBar",
+  "short_name": "DV-Piano",
+  "name": "DV-Piano: Native Android Acoustic Instrument",
   "description": "Mobile piano player with built-in melodies",
   "start_url": "./",
   "scope": "./",
