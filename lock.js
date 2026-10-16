@@ -1,8 +1,7 @@
-/* lock.js — PIN gate. Set CORRECT_PIN before deploying. */
 (function () {
   'use strict';
 
-  const CORRECT_PIN = '1234';       // ← CHANGE THIS
+  const CORRECT_PIN = 'aA4b';       // ← CHANGE THIS
   const STORAGE_KEY = 'pianobar-auth';
   const SESSION_HRS = 24;
 
