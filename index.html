@@ -2,113 +2,459 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f9fa">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#f5f5f5">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <title>DV-Piano</title>
 
-  <!-- Open Graph — WhatsApp & Facebook link preview -->
-  <meta property="og:type"         content="website">
-  <meta property="og:site_name"    content="PianoBar">
-  <meta property="og:title"        content="PianoBar">
-  <meta property="og:description"  content="Mobile piano player with built-in melodies. Tap to play.">
-  <meta property="og:image"        content="https://YOUR_HOSTED_ICON_URL/icon-512.png">
-  <meta property="og:image:width"  content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:url"          content="https://YOUR_USERNAME.github.io/pianobar/">
+  <!-- Minimal Open Graph Metadata for WhatsApp & Facebook Link Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DV-Piano: Studio Audio Instrument">
+  <meta property="og:description" content="Ultra-low latency acoustic piano and synthesizer instrument engineered exclusively for Android handheld touchscreens.">
+  <meta property="og:url" content="https://your-domain.com">
+  <!-- Hosted PNG Preview Image Placeholder -->
+  <meta property="og:image" content="https://your-domain.com/path-to-hosted-preview-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
 
-  <title>PianoBar</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="manifest" href="manifest.json">
+  <!-- App Modular Stylesheet -->
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 
-  <!-- Lock Screen -->
-  <div id="lock-screen" class="lock-screen">
-    <div class="lock-card">
-      <div class="lock-icon">
-        <svg viewBox="0 0 24 24" width="56" height="56" fill="none"
-             stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-          <rect x="5" y="11" width="14" height="10" rx="2"/>
-          <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
-        </svg>
+  <div class="app-shell">
+    <!-- Top Action Bar -->
+    <header class="top-bar">
+      <span class="brand-title">DV-PIANO</span>
+      <div class="top-actions">
+        <!-- Theme Toggle Button -->
+        <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Theme">
+          <svg id="themeIcon" viewBox="0 0 24 24">
+            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+          </svg>
+        </button>
+
+        <!-- 3-Lines Right Sidebar Hamburger Button -->
+        <button class="icon-btn" id="sidebarOpenBtn" aria-label="Open Sidebar Menu">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </button>
       </div>
-      <h2>PianoBar</h2>
-      <p>Enter PIN to continue</p>
-      <input type="password" id="pin-input" maxlength="4"
-             placeholder="••••" inputmode="numeric" autocomplete="off">
-      <button id="pin-submit">Unlock</button>
+    </header>
+
+    <!-- Controls Panel -->
+    <section class="dashboard">
+      <!-- Input Row -->
+      <form class="input-row" id="songForm">
+        <input 
+          type="text" 
+          class="song-input" 
+          id="songInput" 
+          placeholder="Song or notes (C4 D4 E4)..." 
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+        >
+        <button type="submit" class="btn btn-primary" id="playSubmitBtn">PLAY</button>
+      </form>
+
+      <!-- Advanced Features Toolbar -->
+      <div class="keyboard-features-bar">
+        <!-- Feature 1: Octave Transpose -->
+        <button type="button" class="feature-chip-btn" id="octaveDownBtn">-1 OCT</button>
+        <button type="button" class="feature-chip-btn active" id="octaveNormalBtn">C4 (0)</button>
+        <button type="button" class="feature-chip-btn" id="octaveUpBtn">+1 OCT</button>
+
+        <!-- Feature 2: Sustain Damper Pedal -->
+        <button type="button" class="feature-chip-btn" id="sustainPedalBtn">PEDAL: OFF</button>
+
+        <!-- Feature 3: Instrument Timbre Preset Selector -->
+        <select class="feature-select" id="instrumentSelect" aria-label="Instrument Sound">
+          <option value="acoustic" selected>Grand Piano</option>
+          <option value="rhodes">Electric Rhodes</option>
+          <option value="organ">Gospel Organ</option>
+          <option value="synth">Poly Synth</option>
+        </select>
+
+        <!-- Feature 4: Performance Recorder & Replay -->
+        <button type="button" class="feature-chip-btn" id="recordBtn">● REC</button>
+        <button type="button" class="feature-chip-btn" id="replayBtn" style="display: none;">▶ REPLAY</button>
+
+        <!-- Feature 5: Follow-Me Practice Tutor -->
+        <button type="button" class="feature-chip-btn" id="tutorBtn">TUTOR: OFF</button>
+
+        <!-- Feature 6: One-Touch Triad Chord Mode -->
+        <button type="button" class="feature-chip-btn" id="chordModeBtn">CHORD: OFF</button>
+      </div>
+
+      <!-- Playback Status Row -->
+      <div class="playback-status-row">
+        <span class="status-text" id="statusLabel">Ready</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <select class="speed-select" id="speedSelect" aria-label="Speed">
+            <option value="0.75">0.75x</option>
+            <option value="1.0">1.0x</option>
+            <option value="1.25" selected>1.25x</option>
+            <option value="1.5">1.5x</option>
+          </select>
+          <button type="button" class="btn btn-stop" id="stopBtn" style="display: none; height: 38px; padding: 0 10px;">STOP</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Built-in Songs Chips (Horizontal Touch Scroll) -->
+    <nav class="song-chips" id="chipList"></nav>
+
+    <!-- Android Optimized Piano Keyboard (11 White Keys: C4 to F5, 7 Black Keys) -->
+    <div class="piano-wrapper">
+      <div class="piano-keys" id="keyboard">
+        <!-- 11 White keys -->
+        <div class="key-white" data-base-note="C4" data-note="C4"><span class="key-label">C4</span></div>
+        <div class="key-white" data-base-note="D4" data-note="D4"><span class="key-label">D4</span></div>
+        <div class="key-white" data-base-note="E4" data-note="E4"><span class="key-label">E4</span></div>
+        <div class="key-white" data-base-note="F4" data-note="F4"><span class="key-label">F4</span></div>
+        <div class="key-white" data-base-note="G4" data-note="G4"><span class="key-label">G4</span></div>
+        <div class="key-white" data-base-note="A4" data-note="A4"><span class="key-label">A4</span></div>
+        <div class="key-white" data-base-note="B4" data-note="B4"><span class="key-label">B4</span></div>
+        <div class="key-white" data-base-note="C5" data-note="C5"><span class="key-label">C5</span></div>
+        <div class="key-white" data-base-note="D5" data-note="D5"><span class="key-label">D5</span></div>
+        <div class="key-white" data-base-note="E5" data-note="E5"><span class="key-label">E5</span></div>
+        <div class="key-white" data-base-note="F5" data-note="F5"><span class="key-label">F5</span></div>
+
+        <!-- 7 Black keys -->
+        <div class="key-black" data-base-note="C#4" data-note="C#4" style="left: calc((100% / 11) * 1 - ((100% / 11) * 0.68 / 2));"><span class="key-label">C#4</span></div>
+        <div class="key-black" data-base-note="D#4" data-note="D#4" style="left: calc((100% / 11) * 2 - ((100% / 11) * 0.68 / 2));"><span class="key-label">D#4</span></div>
+        <div class="key-black" data-base-note="F#4" data-note="F#4" style="left: calc((100% / 11) * 4 - ((100% / 11) * 0.68 / 2));"><span class="key-label">F#4</span></div>
+        <div class="key-black" data-base-note="G#4" data-note="G#4" style="left: calc((100% / 11) * 5 - ((100% / 11) * 0.68 / 2));"><span class="key-label">G#4</span></div>
+        <div class="key-black" data-base-note="A#4" data-note="A#4" style="left: calc((100% / 11) * 6 - ((100% / 11) * 0.68 / 2));"><span class="key-label">A#4</span></div>
+        <div class="key-black" data-base-note="C#5" data-note="C#5" style="left: calc((100% / 11) * 8 - ((100% / 11) * 0.68 / 2));"><span class="key-label">C#5</span></div>
+        <div class="key-black" data-base-note="D#5" data-note="D#5" style="left: calc((100% / 11) * 9 - ((100% / 11) * 0.68 / 2));"><span class="key-label">D#5</span></div>
+      </div>
     </div>
   </div>
 
-  <!-- Main App -->
-  <div id="app" class="app hidden">
-
-    <header class="app-header">
-      <span class="app-title">PianoBar</span>
-      <button id="dark-toggle" class="icon-btn" aria-label="Toggle dark mode">
-        <!-- SVG injected by app.js -->
+  <!-- Right Sidebar Overlay & Navigation Drawer -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">MENU</span>
+      <button class="back-btn" id="sidebarCloseBtn" aria-label="Close Menu">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
       </button>
-    </header>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-item" data-modal="modal-about-app">
+        <span>About the app</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+      </div>
+      <div class="sidebar-item" data-modal="modal-about-dev">
+        <span>About developer</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+      </div>
+      <!-- Team Modal Item -->
+      <div class="sidebar-item" data-modal="modal-team">
+        <span>About Team</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+      </div>
+      <div class="sidebar-item" data-modal="modal-how-to-use">
+        <span>How to use</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+      </div>
+      <div class="sidebar-item" data-modal="modal-terms">
+        <span>Terms of Use</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+      </div>
+      <div class="sidebar-item" data-modal="modal-contact">
+        <span>Contact Developer</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+      </div>
+    </nav>
+  </aside>
 
-    <section class="song-section">
-      <div class="input-row">
-        <input type="text" id="song-input"
-               placeholder="Search a melody…" autocomplete="off">
-        <button id="search-btn">Search</button>
+  <!-- 1. FULL PAGE MODAL: About The App -->
+  <section class="full-modal" id="modal-about-app">
+    <header class="modal-top-bar">
+      <button class="back-btn modal-back-trigger" aria-label="Go Back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <span class="modal-title">About the app</span>
+    </header>
+    <div class="modal-content">
+      <div class="modal-card">
+        <h3>DV-Piano Architecture</h3>
+        <p>DV-Piano is an ultra-low latency acoustic piano instrument engine designed exclusively for Android handheld touchscreens.</p>
+        <p>The entire sound synthesis pipeline operates completely within your browser environment utilizing mathematical Web Audio oscillators. No audio samples are downloaded from remote servers, guaranteeing total offline operational integrity.</p>
+      </div>
+      <div class="modal-card">
+        <h3>System Standards</h3>
+        <p>Built with 100% zero Content Delivery Network dependencies, strict compliance with mobile viewport dimensions (100dvh by 100dvw), and accessibility guidelines enforcing that no typography is displayed below 19px.</p>
+        <p>Equipped with an advanced dynamics compressor to eliminate speaker distortion, lookahead algorithmic sequencing, and multi-timbre synthesis.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. FULL PAGE MODAL: About Developer -->
+  <section class="full-modal" id="modal-about-dev">
+    <header class="modal-top-bar">
+      <button class="back-btn modal-back-trigger" aria-label="Go Back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <span class="modal-title">About developer</span>
+    </header>
+    <div class="modal-content">
+      <div class="dev-avatar-container">
+        <!-- Rotating Gear SVG -->
+        <svg class="rotating-gear-svg" viewBox="0 0 220 220" aria-hidden="true">
+          <g>
+            <circle cx="110" cy="110" r="92" fill="none" stroke="currentColor" stroke-width="5" />
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(0 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(22.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(45 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(67.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(90 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(112.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(135 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(157.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(180 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(202.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(225 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(247.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(270 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(292.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(315 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(337.5 110 110)"/>
+          </g>
+        </svg>
+
+        <!-- Static 160px circular image placeholder -->
+        <img 
+          class="dev-photo" 
+          id="devPhotoPlaceholder"
+          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=320&q=80" 
+          alt="Developer Profile Photo"
+          width="160" 
+          height="160"
+        >
       </div>
 
-      <div id="now-playing" class="now-playing hidden">
-        <span id="song-title"></span>
-        <div class="play-controls">
-          <button id="play-btn" class="ctrl-btn">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <polygon points="5,3 19,12 5,21" fill="currentColor"/>
-            </svg>
-            Play
-          </button>
-          <button id="stop-btn" class="ctrl-btn stop hidden">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <rect x="4" y="4" width="16" height="16" fill="currentColor"/>
-            </svg>
-            Stop
-          </button>
+      <h2 class="dev-name">Damilare Victor</h2>
+      <p class="dev-role">Lead Audio Systems Engineer</p>
+
+      <div class="modal-card">
+        <div class="bio-text" id="devBioText">
+          Senior software architect and digital signal processing developer specializing in high-performance browser audio instruments.<br><br>
+          With over a decade of hands-on expertise across Web Audio API standards, native mobile optimization, and human-computer touch interfaces, he focuses on eliminating audio latency on portable operating systems.<br><br>
+          His architectural philosophies center on pure native web technologies: avoiding bloated third-party frameworks, eliminating unnecessary remote server roundtrips, and honoring system accessibility principles.<br><br>
+          Beyond synthesizer development, he routinely leads software modernization teams across international tech organizations, coaching young developers in robust software delivery, offline resiliency architectures, and real-time interactive user systems.
+        </div>
+        <button type="button" class="show-more-btn" id="bioToggleBtn">Show more</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. FULL PAGE MODAL: Team Modal (Replicating Developer Modal Structure) -->
+  <section class="full-modal" id="modal-team">
+    <header class="modal-top-bar">
+      <button class="back-btn modal-back-trigger" aria-label="Go Back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <span class="modal-title">About Team</span>
+    </header>
+    <div class="modal-content">
+      <div class="dev-avatar-container">
+        <!-- Rotating Gear SVG -->
+        <svg class="rotating-gear-svg" viewBox="0 0 220 220" aria-hidden="true">
+          <g>
+            <circle cx="110" cy="110" r="92" fill="none" stroke="currentColor" stroke-width="5" />
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(0 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(22.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(45 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(67.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(90 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(112.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(135 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(157.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(180 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(202.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(225 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(247.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(270 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(292.5 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(315 110 110)"/>
+            <rect x="105" y="6" width="10" height="16" rx="2" fill="currentColor" transform="rotate(337.5 110 110)"/>
+          </g>
+        </svg>
+
+        <!-- Static 160px circular Team photo -->
+        <img 
+          class="dev-photo" 
+          id="teamPhotoPlaceholder"
+          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=320&q=80" 
+          alt="Engineering Team Photo"
+          width="160" 
+          height="160"
+        >
+      </div>
+
+      <h2 class="dev-name">DV Audio Systems Team</h2>
+      <p class="dev-role">Core DSP & Acoustic Architecture</p>
+
+      <div class="modal-card">
+        <div class="bio-text" id="teamBioText">
+          The DV Audio Systems Laboratory represents a dedicated collective of acoustic researchers, digital signal processing engineers, and native touch interface developers.<br><br>
+          Our mission is delivering zero-latency musical performance instruments that execute entirely within native Android browser runtimes without requiring external cloud computation or heavy third-party runtimes.<br><br>
+          Every mathematical oscillator, harmonic overtone generator, and dynamic envelope filter is crafted to deliver maximum audio realism, battery efficiency, and hardware speaker safety.<br><br>
+          Collaborating across music theory, psychoacoustics, and low-level software architecture, the team ensures DV-Piano stands as an uncompromising standard for portable musical tools.
+        </div>
+        <button type="button" class="show-more-btn" id="teamBioToggleBtn">Show more</button>
+      </div>
+
+      <div class="modal-card">
+        <h3>Team Channels</h3>
+        <p>Connect with the engineering collective for technical partnerships or architectural queries:</p>
+        <div class="contact-icons-row">
+          <a class="brand-circle-btn btn-gmail" href="mailto:team@dvpiano.org" aria-label="Send Email to Team">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </a>
+          <a class="brand-circle-btn btn-whatsapp" href="https://wa.me/1234567890" target="_blank" rel="noopener" aria-label="WhatsApp Team">
+            <svg viewBox="0 0 24 24"><path d="M16.75 13.96c.25.13.41.2.46.3.06.11.04.61-.21 1.18-.25.56-.93 1.07-1.48 1.14-.49.06-1.1.09-3.23-.74-2.58-1-4.22-3.6-4.35-3.77-.13-.18-1.04-1.38-1.04-2.64 0-1.25.66-1.87.9-2.13.23-.25.51-.31.68-.31.18 0 .35 0 .5.01.16.01.38-.06.59.45.23.55.77 1.9.84 2.04.07.15.11.32.02.5-.08.18-.13.29-.26.44-.13.16-.27.35-.39.47-.13.12-.26.26-.11.52.15.25.67 1.1 1.44 1.78.99.88 1.82 1.15 2.08 1.28.26.13.41.11.56-.06.15-.18.66-.77.83-1.03.18-.26.35-.22.59-.13zM12 2a10 10 0 0 0-8.66 15L2 22l5.16-1.31A10 10 0 1 0 12 2z"/></svg>
+          </a>
+          <a class="brand-circle-btn btn-phone" href="tel:+18005550199" aria-label="Call Team">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          </a>
+          <a class="brand-circle-btn btn-facebook" href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook Team">
+            <svg viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. FULL PAGE MODAL: How To Use -->
+  <section class="full-modal" id="modal-how-to-use">
+    <header class="modal-top-bar">
+      <button class="back-btn modal-back-trigger" aria-label="Go Back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <span class="modal-title">How to use</span>
+    </header>
+    <div class="modal-content">
+      <div class="modal-card">
+        <h3>1. Manual Touch & Glissando</h3>
+        <p>Touch any white or black piano key to produce instant sound. Slide your finger across keys to play a continuous glissando sweep smoothly.</p>
+      </div>
+      <div class="modal-card">
+        <h3>2. Octave Shift (-1, Normal, +1)</h3>
+        <p>Use the -1 OCT, C4, and +1 OCT buttons to transpose the entire keyboard across lower bass registers or higher treble octaves.</p>
+      </div>
+      <div class="modal-card">
+        <h3>3. Sustain Damper Pedal</h3>
+        <p>Tap PEDAL to toggle acoustic damper resonance. When ON, notes ring out naturally after your finger lifts from the keys.</p>
+      </div>
+      <div class="modal-card">
+        <h3>4. Sound Timbre Selector</h3>
+        <p>Switch between Grand Piano, Electric Rhodes, Gospel Organ, and Poly Synth timbres directly from the top features bar.</p>
+      </div>
+      <div class="modal-card">
+        <h3>5. Performance Recorder</h3>
+        <p>Tap ● REC to record your live playing. Tap STOP REC when done, then tap ▶ REPLAY to listen to your recorded performance.</p>
+      </div>
+      <div class="modal-card">
+        <h3>6. Interactive Follow-Me Tutor</h3>
+        <p>Turn TUTOR: ON and pick any song. The piano illuminates the target key in amber and waits for you to strike the correct key before advancing!</p>
+      </div>
+      <div class="modal-card">
+        <h3>7. One-Touch Triad Chord Mode</h3>
+        <p>Toggle CHORD: ON to trigger complete harmonic three-note chords with a single finger touch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. FULL PAGE MODAL: Terms Of Use -->
+  <section class="full-modal" id="modal-terms">
+    <header class="modal-top-bar">
+      <button class="back-btn modal-back-trigger" aria-label="Go Back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <span class="modal-title">Terms of Use</span>
+    </header>
+    <div class="modal-content">
+      <div class="modal-card">
+        <h3>Proprietary Software Notice</h3>
+        <p>DV-Piano is proprietary software. All rights, audio signal algorithms, designs, and source assets are strictly protected and may not be redistributed without written consent.</p>
+      </div>
+      <div class="modal-card">
+        <h3>Privacy Policy</h3>
+        <p>This application does not track, collect, store, or transmit any user interactions, keystrokes, personal identity details, or telemetry. It operates completely private and local to your device browser cache.</p>
+      </div>
+      <div class="modal-card">
+        <h3>Warranty Disclaimer</h3>
+        <p>This software is provided on an as-is basis without warranties regarding browser audio driver incompatibilities or hardware-specific sound card latencies.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. FULL PAGE MODAL: Contact Developer -->
+  <section class="full-modal" id="modal-contact">
+    <header class="modal-top-bar">
+      <button class="back-btn modal-back-trigger" aria-label="Go Back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <span class="modal-title">Contact Developer</span>
+    </header>
+    <div class="modal-content">
+      <div class="modal-card">
+        <h3>Connect Directly</h3>
+        <p>Select any verified channel below for professional support, technical inquiries, or organization partnerships:</p>
+
+        <div class="contact-icons-row">
+          <a class="brand-circle-btn btn-gmail" href="mailto:support@dvpiano.org" aria-label="Send Email via Gmail">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </a>
+          <a class="brand-circle-btn btn-whatsapp" href="https://wa.me/1234567890" target="_blank" rel="noopener" aria-label="Contact via WhatsApp">
+            <svg viewBox="0 0 24 24"><path d="M16.75 13.96c.25.13.41.2.46.3.06.11.04.61-.21 1.18-.25.56-.93 1.07-1.48 1.14-.49.06-1.1.09-3.23-.74-2.58-1-4.22-3.6-4.35-3.77-.13-.18-1.04-1.38-1.04-2.64 0-1.25.66-1.87.9-2.13.23-.25.51-.31.68-.31.18 0 .35 0 .5.01.16.01.38-.06.59.45.23.55.77 1.9.84 2.04.07.15.11.32.02.5-.08.18-.13.29-.26.44-.13.16-.27.35-.39.47-.13.12-.26.26-.11.52.15.25.67 1.1 1.44 1.78.99.88 1.82 1.15 2.08 1.28.26.13.41.11.56-.06.15-.18.66-.77.83-1.03.18-.26.35-.22.59-.13zM12 2a10 10 0 0 0-8.66 15L2 22l5.16-1.31A10 10 0 1 0 12 2z"/></svg>
+          </a>
+          <a class="brand-circle-btn btn-phone" href="tel:+18005550199" aria-label="Call Direct Telephone">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          </a>
+          <a class="brand-circle-btn btn-facebook" href="https://facebook.com" target="_blank" rel="noopener" aria-label="Visit Facebook Profile">
+            <svg viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
+          </a>
         </div>
       </div>
 
-      <div class="speed-row">
-        <span>Speed</span>
-        <input type="range" id="speed-range"
-               min="0.5" max="2" step="0.25" value="1.25">
-        <span id="speed-label">1.25×</span>
+      <div class="modal-card">
+        <h3>Organization Details</h3>
+        <div class="contact-detail-line">
+          <span class="contact-label">Organization:</span>
+          <span class="contact-value">DV Audio Systems Laboratory</span>
+        </div>
+        <div class="contact-detail-line">
+          <span class="contact-label">Office Location:</span>
+          <span class="contact-value">Victoria Island Tech Hub, Lagos, Nigeria</span>
+        </div>
+        <div class="contact-detail-line">
+          <span class="contact-label">Working Hours:</span>
+          <span class="contact-value">Monday to Friday: 08:00 - 18:00 GMT+1</span>
+        </div>
+        <div class="contact-detail-line">
+          <span class="contact-label">Official Email:</span>
+          <span class="contact-value">support@dvpiano.org</span>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="chips-section">
-      <div id="chips" class="chips"></div>
-    </section>
-
-    <section class="piano-section">
-      <div class="piano-scroll">
-        <div id="piano" class="piano"></div>
-      </div>
-    </section>
-
-    <p class="hint">Tap keys to play · Scroll to see all notes</p>
-  </div>
-
-  <!-- Global centred toast -->
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="gate.js"></script> 
-  <script src="melody.js"></script>
-  <script src="lock.js"></script>
-  <script src="app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
-      });
-    }
-  </script>
+  <!-- Modular Scripts Loaded Sequentially -->
+  <script src="/desktop-block.js"></script>
+  <script src="/piano.js"></script>
+  <script src="/premium.js"></script>
+  <script src="/sidebar.js"></script>
+  <script src="/app.js"></script>
 </body>
 </html>
