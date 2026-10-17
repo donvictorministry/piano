@@ -7,7 +7,6 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="/manifest.json">
   <title>DV-Piano</title>
 
   <!-- Minimal Open Graph Metadata for WhatsApp & Facebook Link Preview -->
@@ -19,9 +18,11 @@
   <meta property="og:image" content="https://your-domain.com/path-to-hosted-preview-image.png">
 
   <!-- App Modular Stylesheet -->
-  <link rel="stylesheet" href="/styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  
   <div class="app-shell">
     <!-- Top Action Bar -->
     <header class="top-bar">
@@ -47,15 +48,13 @@
     <section class="dashboard">
       <!-- Input Row -->
       <form class="input-row" id="songForm">
-        <input 
-          type="text" 
+        <input type="text" 
           class="song-input" 
           id="songInput" 
           placeholder="Song or notes (C4 D4 E4)..." 
           autocomplete="off"
           autocorrect="off"
-          spellcheck="false"
-        >
+          spellcheck="false">
         <button type="submit" class="btn btn-primary" id="playSubmitBtn">PLAY</button>
       </form>
 
@@ -445,6 +444,7 @@
       </div>
     </div>
   </section>
- <script src="app.js"></script>
+  
+<script src="app.js"></script>
 </body>
 </html>
