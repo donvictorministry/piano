@@ -1,82 +1,124 @@
 (function() {
-  // Inject UI styles directly to keep it fully self-contained
+  // 1. Inject CSS (Inherits app theming, strict mobile edge-to-edge, no text < 19px)
   const style = document.createElement('style');
   style.textContent = `
-    #pwa-install-container {
-      display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 9999; align-items: center; gap: 12px; background: rgba(30, 30, 30, 0.95);
-      padding: 8px 16px 8px 20px; border-radius: 50px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px); font-family: sans-serif;
+    @keyframes install-spin { 100% { transform: rotate(360deg); } }
+    
+    #dv-install-overlay {
+      display: none; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100dvw; 
+      height: 100dvh; 
+      background: var(--surface, #fdfcff); 
+      z-index: 99999; 
+      align-items: center; 
+      justify-content: center; 
+      flex-direction: column; 
+      color: var(--on-surface, #1a1b1f); 
+      font-family: Roboto, sans-serif;
+      text-align: center;
+      padding: 24px;
+      box-sizing: border-box;
     }
-    #pwa-install-container.show { display: flex; }
-    .pwa-timer-wrap { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
-    .pwa-ring-svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
-    .pwa-ring-bg { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 3; }
-    .pwa-ring-progress { fill: none; stroke: #adc6ff; stroke-width: 3; stroke-dasharray: 100.5; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear; }
-    #pwa-timer-text { color: #fff; font-size: 14px; font-weight: bold; }
-    #pwa-install-btn { background: #adc6ff; color: #002e69; border: none; padding: 8px 16px; border-radius: 50px; font-weight: bold; font-size: 14px; cursor: pointer; }
+    
+    .dv-install-spinner {
+      width: 56px; 
+      height: 56px; 
+      border: 5px solid var(--outline, #c4c6d0); 
+      border-top-color: var(--primary, #1a5fb4); 
+      border-radius: 50%; 
+      animation: install-spin 1s linear infinite; 
+      margin-bottom: 24px;
+    }
+    
+    #dv-install-msg {
+      font-size: 20px; 
+      line-height: 1.5;
+      font-weight: 500;
+      max-width: 90%;
+    }
   `;
   document.head.appendChild(style);
 
-  // Inject HTML structure
-  const container = document.createElement('div');
-  container.id = 'pwa-install-container';
-  container.innerHTML = `
-    <div class="pwa-timer-wrap">
-      <svg class="pwa-ring-svg" width="36" height="36" viewBox="0 0 36 36">
-        <circle class="pwa-ring-bg" cx="18" cy="18" r="16"></circle>
-        <circle id="pwa-timer-ring" class="pwa-ring-progress" cx="18" cy="18" r="16"></circle>
-      </svg>
-      <span id="pwa-timer-text">10</span>
-    </div>
-    <button id="pwa-install-btn">Install App</button>
+  // 2. Inject Overlay HTML
+  const overlay = document.createElement('div');
+  overlay.id = 'dv-install-overlay';
+  overlay.innerHTML = `
+    <div id="dv-install-spinner" class="dv-install-spinner" style="display: none;"></div>
+    <div id="dv-install-msg"></div>
   `;
-  document.body.appendChild(container);
+  document.body.appendChild(overlay);
 
-  // Logic
-  let deferredPrompt;
-  const installBtn = document.getElementById('pwa-install-btn');
-  const timerText = document.getElementById('pwa-timer-text');
-  const timerRing = document.getElementById('pwa-timer-ring');
-  let countdownInterval;
-  let timeLeft = 10;
-  const maxOffset = 100.5; // 2 * PI * 16
+  // 3. Inject Sidebar Button
+  const sidebarNav = document.querySelector('.sidebar-nav');
+  if (!sidebarNav) return;
+
+  const installItem = document.createElement('div');
+  installItem.className = 'sidebar-item';
+  installItem.innerHTML = `
+    <span>Install App</span>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+  `;
+  sidebarNav.appendChild(installItem);
+
+  // 4. Logic & State
+  let deferredPrompt = null;
+  const msg = document.getElementById('dv-install-msg');
+  const spinner = document.getElementById('dv-install-spinner');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    
-    container.classList.add('show');
-    timeLeft = 10;
-    timerText.textContent = timeLeft;
-    timerRing.style.strokeDashoffset = '0';
-    
-    countdownInterval = setInterval(() => {
-      timeLeft--;
-      if (timeLeft >= 0) {
-        timerText.textContent = timeLeft;
-        timerRing.style.strokeDashoffset = maxOffset - ((timeLeft / 10) * maxOffset);
-      }
-      if (timeLeft <= 0) {
-        clearInterval(countdownInterval);
-        container.classList.remove('show');
-      }
-    }, 1000);
   });
 
-  installBtn.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    clearInterval(countdownInterval);
-    container.classList.remove('show');
+  installItem.addEventListener('click', async () => {
+    // Close sidebar
+    if (sidebar) sidebar.classList.remove('open');
+    if (sidebarOverlay) sidebarOverlay.classList.remove('open');
+
+    // Show Overlay
+    overlay.style.display = 'flex';
+
+    if (!deferredPrompt) {
+      // Message if prompt not ready
+      spinner.style.display = 'none';
+      msg.innerHTML = 'This app will install on your phone once your phone is ready.<br>Please tap again after a few minutes later. God bless.';
+      
+      // Auto vanish after 5 seconds
+      setTimeout(() => {
+        if (!deferredPrompt) overlay.style.display = 'none';
+      }, 5000);
+      return;
+    }
+
+    // Prompt is ready: Show Play Store style spinner
+    spinner.style.display = 'block';
+    msg.textContent = 'Installing...';
+
+    // Trigger native prompt in background
     deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
+    
+    // Check outcome
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'dismissed') {
+      overlay.style.display = 'none';
+    }
+    
     deferredPrompt = null;
   });
 
+  // 5. Success Event
   window.addEventListener('appinstalled', () => {
-    clearInterval(countdownInterval);
-    container.classList.remove('show');
-    deferredPrompt = null;
+    spinner.style.display = 'none';
+    msg.textContent = 'Installation Successful!';
+    
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 2000);
   });
 })();
