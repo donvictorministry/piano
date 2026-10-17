@@ -1,5 +1,5 @@
 (function() {
-  // 1. Inject CSS (Standalone, inherits app themes, strict mobile UI)
+  // 1. Inject CSS & Inline SVG Layout
   const style = document.createElement('style');
   style.textContent = `
     #dv-drum-modal {
@@ -25,19 +25,23 @@
     }
     
     .dv-drum-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; flex: 1; min-height: 300px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; flex: 1; min-height: 320px;
     }
     
     .dv-drum-pad {
       background: var(--surface-container, #f0f0f4);
       border: 2px solid var(--outline, #c4c6d0);
-      border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;
       font-size: 19px; font-weight: bold; color: var(--on-surface);
       user-select: none; -webkit-user-select: none; transition: transform 0.1s, background 0.1s;
+      padding: 16px; gap: 12px;
     }
     .dv-drum-pad.active {
-      background: var(--primary); color: var(--on-primary); border-color: var(--primary);
+      background: var(--primary); color: #ffffff; border-color: var(--primary);
       transform: scale(0.95);
+    }
+    .dv-drum-pad svg {
+      width: 64px; height: 64px; fill: currentColor; pointer-events: none;
     }
     
     .dv-drum-controls {
@@ -49,10 +53,12 @@
     .dv-drum-controls input[type="range"] { width: 50%; accent-color: var(--primary); }
     
     .dv-drum-btn {
-      background: var(--primary); color: var(--on-primary); border: none;
+      background: var(--primary); color: #ffffff; border: none;
       padding: 16px; border-radius: 16px; font-size: 20px; font-weight: bold;
       width: 100%; cursor: pointer; margin-top: auto;
+      transition: opacity 0.2s;
     }
+    .dv-drum-btn.running { background: var(--outline); color: var(--on-surface); }
   `;
   document.head.appendChild(style);
 
@@ -102,7 +108,15 @@
     stopSequencer();
   });
 
-  // 4. Audio Engine & Logic
+  // 4. SVG Icons for "Pure Drum Musical Images"
+  const icons = {
+    kick: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>`,
+    snare: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>`,
+    hihat: `<svg viewBox="0 0 24 24"><path d="M4 7h16v2H4zm0 4h16v2H4zm0 4h16v2H4z"/></svg>`,
+    clap: `<svg viewBox="0 0 24 24"><path d="M18 11c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm-4-4c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm-4 4c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm-4-4c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm8-4c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>`
+  };
+
+  // 5. Audio Engine
   let audioCtx = null;
   let masterGain = null;
   let isSeqRunning = false;
@@ -110,10 +124,10 @@
   let currentStep = 0;
 
   const padsData = [
-    { id: 'kick', label: 'KICK' },
-    { id: 'snare', label: 'SNARE' },
-    { id: 'hihat', label: 'HI-HAT' },
-    { id: 'clap', label: 'CLAP' }
+    { id: 'kick', label: 'KICK', icon: icons.kick },
+    { id: 'snare', label: 'SNARE', icon: icons.snare },
+    { id: 'hihat', label: 'HI-HAT', icon: icons.hihat },
+    { id: 'clap', label: 'CLAP', icon: icons.clap }
   ];
 
   const pattern = {
@@ -142,11 +156,11 @@
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.frequency.setValueAtTime(150, now);
-      osc.frequency.exponentialRampToValueAtTime(0.01, now + 0.5);
+      osc.frequency.exponentialRampToValueAtTime(0.01, now + 0.4);
       gain.gain.setValueAtTime(1, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
       osc.connect(gain); gain.connect(masterGain);
-      osc.start(now); osc.stop(now + 0.5);
+      osc.start(now); osc.stop(now + 0.4);
     } else if (type === 'snare') {
       const bufferSize = audioCtx.sampleRate * 0.2;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -197,7 +211,7 @@
   padsData.forEach(pad => {
     const el = document.createElement('div');
     el.className = 'dv-drum-pad';
-    el.textContent = pad.label;
+    el.innerHTML = `${pad.icon}<span>${pad.label}</span>`;
     
     const trigger = (e) => {
       e.preventDefault();
@@ -229,7 +243,6 @@
     if (pattern.hihat[step]) playSound('hihat');
     if (pattern.clap[step]) playSound('clap');
 
-    // Visual feedback for sequencer step (optional, could map to pads)
     if (pattern.kick[step]) {
       const pads = grid.children;
       pads[0].classList.add('active');
@@ -243,7 +256,7 @@
     isSeqRunning = false;
     clearInterval(seqInterval);
     seqBtn.textContent = 'Start Sequencer';
-    seqBtn.style.background = 'var(--primary)';
+    seqBtn.classList.remove('running');
   }
 
   seqBtn.addEventListener('click', () => {
@@ -251,7 +264,7 @@
     isSeqRunning = !isSeqRunning;
     if (isSeqRunning) {
       seqBtn.textContent = 'Stop Sequencer';
-      seqBtn.style.background = 'var(--outline)';
+      seqBtn.classList.add('running');
       currentStep = 0;
       seqInterval = setInterval(runSequencer, 150); // ~100 BPM
     } else {
