@@ -1,4 +1,4 @@
-/* 1. Base Note Frequencies & Harmonic Engine */
+    /* 1. Base Note Frequencies & Harmonic Engine */
     const baseFrequencies = {
       'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'D#3': 155.56, 'E3': 164.81,
       'F3': 174.61, 'F#3': 185.00, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00,
@@ -717,15 +717,15 @@
     const teamBioToggleBtn = document.getElementById('teamBioToggleBtn');
     let isTeamBioExpanded = false;
 
-    teamBioToggleBtn.addEventL21⁵⁶stener('click', () => {
+    teamBioToggleBtn.addEventListener('click', () => {
       isTeamBioExpanded = !isTeamBioExpanded;
       teamBioText.classList.toggle('expanded', isTeamBioExpanded);
-66      teamBioToggleBtn.textContent = isTeamBioExpanded ? 'Show less' : 'Show more';
+      teamBioToggleBtn.textContent = isTeamBioExpanded ? 'Show less' : 'Show more';
     });
 
     /* 12. PWA Service Worker Registration */
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+       navigator.serviceWorker.register('./sw.js').catch(() => {});
       });
     }
