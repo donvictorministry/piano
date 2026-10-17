@@ -1,4 +1,4 @@
-var CACHE_NAME = 'kingdom-app-v1';
+var CACHE_NAME = 'dv-piano-app-v1';
 var FILES = [
     './',
     'index.html',
