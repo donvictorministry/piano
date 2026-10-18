@@ -64,15 +64,13 @@
       <div class="dv-onboarding-icon">
         <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
       </div>
-      <h2 class="dv-onboarding-title">DV-Piano Studio</h2>
+      // <h2 class="dv-onboarding-title">DV-Piano Studio</h2>
       <p class="dv-onboarding-text">
-        On behalf of Don Victor Ministries Online Community, I warmly welcome you to DV-Piano App. Enjoy five premium musical instruments: Piano, Drums, Kalimba, Handpan, and Tabla. Remember our vision of reaching six million souls for the Lord is more urgent now than ever before.
+        I, Dr. Don Victor, warmly welcome you to the DV-Piano app on behalf of Don Victor Ministries Online Community. Explore and enjoy five premium musical instruments: Piano, Drums, Kalimba, Handpan, and Tabla!
         <br><br>
-        Tap the menu icon <strong>☰</strong> at the top right to explore the sidebar and switch instruments. Your feedback helps us serve you better.
-         <br><br>
-           Rev. Don Victor, PhD .
+        Tap the menu icon <strong>☰</strong> at the top right to explore the sidebar items.
          </p>
-      <button class="dv-onboarding-btn" id="dvOnboardingDismiss">Got it</button>
+      <button class="dv-onboarding-btn" id="dvOnboardingDismiss">God Bless</button>
     </div>
   `;
   document.body.appendChild(overlay);
