@@ -1,4 +1,4 @@
-var CACHE_NAME = 'dv-piano-app-v2';
+var CACHE_NAME = 'dv-piano-app-v3';
 var FILES = [
     './',
     'index.html',
