@@ -1,15 +1,15 @@
 /* puzzle.js — gated entry screen for DV-Piano. Blocks the full app
    behind a simple pick-the-answer puzzle until solved once per
-   session. IMPORTANT HONESTY NOTE: this is a client-side friction
-   gate only. Because the correct answers live in this file as plain
-   JavaScript, it deters casual/scripted traffic and makes the app
-   feel native and gated — it is NOT real bot security. A determined
-   bot can read this source and bypass it. For genuine protection,
-   a server-side check (reCAPTCHA/hCaptcha/backend token) is required.
+   session. HONESTY NOTE: this is a client-side friction gate only —
+   the answers live in this file as plain JavaScript, so it deters
+   casual/scripted traffic and makes the app feel native and gated,
+   but it is NOT real bot security. A determined bot can read this
+   source and bypass it. Genuine protection requires a server-side
+   check (reCAPTCHA/hCaptcha/backend token).
 
    Self-contained. Loads BEFORE melody.js and app.js so the gate
-   appears first, before any other script runs. Does not modify any
-   other file. */
+   appears first. 100dvw/100dvh edge-to-edge, no max-width anywhere,
+   Android-only mobile layout. */
 (function () {
   'use strict';
 
@@ -41,36 +41,11 @@
      PUZZLE POOL
      ============================================================ */
   const TEXT_PUZZLES = [
-    {
-      type: 'text',
-      question: 'For God so loved the...?',
-      options: ['World', 'Angels', 'Animals', 'Nations'],
-      correct: 'World'
-    },
-    {
-      type: 'text',
-      question: 'God the Father, God the Son, God the...?',
-      options: ['Spirit', 'Prophet', 'Angel', 'Apostle'],
-      correct: 'Spirit'
-    },
-    {
-      type: 'text',
-      question: 'In the beginning, God created the heavens and the...?',
-      options: ['Earth', 'Stars', 'Sea', 'Sun'],
-      correct: 'Earth'
-    },
-    {
-      type: 'text',
-      question: 'The Lord is my..., I shall not want',
-      options: ['Shepherd', 'King', 'Friend', 'Teacher'],
-      correct: 'Shepherd'
-    },
-    {
-      type: 'text',
-      question: 'Joy to the world, the Lord is...?',
-      options: ['Come', 'Near', 'Risen', 'Here'],
-      correct: 'Come'
-    }
+    { type: 'text', question: 'For God so loved the...?', options: ['World', 'Angels', 'Animals', 'Nations'], correct: 'World' },
+    { type: 'text', question: 'God the Father, God the Son, God the...?', options: ['Spirit', 'Prophet', 'Angel', 'Apostle'], correct: 'Spirit' },
+    { type: 'text', question: 'In the beginning, God created the heavens and the...?', options: ['Earth', 'Stars', 'Sea', 'Sun'], correct: 'Earth' },
+    { type: 'text', question: 'The Lord is my..., I shall not want', options: ['Shepherd', 'King', 'Friend', 'Teacher'], correct: 'Shepherd' },
+    { type: 'text', question: 'Joy to the world, the Lord is...?', options: ['Come', 'Near', 'Risen', 'Here'], correct: 'Come' }
   ];
 
   const IMAGE_PUZZLES = [
@@ -84,8 +59,7 @@
 
   function pickRandomPuzzle(excludeQuestion) {
     const pool = ALL_PUZZLES.filter(p => p.question + JSON.stringify(p.options) !== excludeQuestion);
-    const choice = pool[Math.floor(Math.random() * pool.length)];
-    return choice;
+    return pool[Math.floor(Math.random() * pool.length)];
   }
 
   function shuffle(arr) {
@@ -98,27 +72,39 @@
   }
 
   /* ============================================================
-     STYLES
+     STYLES — 100dvw / 100dvh edge-to-edge, no max-width anywhere
      ============================================================ */
   function injectStyles() {
     const style = document.createElement('style');
     style.textContent = `
       #puzzleGate {
-        position: fixed; inset: 0; width: 100dvw; height: 100dvh;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100dvw; height: 100dvh;
+        margin: 0; padding: 0;
         background: var(--bg-page, #f8f9fa);
         z-index: 999999;
         display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
-        padding: 24px 20px;
+        align-items: stretch; justify-content: center;
         font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+        overflow: hidden;
       }
       #puzzleGate * { box-sizing: border-box; font-size: 19px; }
+      .puzzle-inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 20px;
+      }
       .puzzle-card {
         background: var(--bg-surface, #fff);
         border: 1px solid var(--border-color, #cbd5e1);
         border-radius: 16px;
         padding: 28px 22px;
-        width: 100%; max-width: 420px;
+        width: 100%;
         box-shadow: var(--shadow, 0 4px 6px rgba(0,0,0,.1));
         text-align: center;
       }
@@ -134,9 +120,11 @@
       }
       .puzzle-options {
         display: flex; flex-direction: column; gap: 12px;
+        width: 100%;
       }
       .puzzle-options.image-row {
         flex-direction: row; justify-content: center; gap: 16px;
+        flex-wrap: wrap;
       }
       .puzzle-option-btn {
         background: var(--bg-page, #f8f9fa);
@@ -147,6 +135,7 @@
         color: var(--text-main, #0f172a);
         cursor: pointer;
         font-family: inherit;
+        width: 100%;
       }
       .puzzle-option-btn:active { transform: scale(.96); }
       .puzzle-option-btn.image-btn {
@@ -174,6 +163,7 @@
       }
       .puzzle-footer {
         margin-top: 18px; font-size: 19px; color: var(--text-muted, #475569);
+        text-align: center;
       }
       body.dark #puzzleGate { background: var(--bg-page, #090d16); }
     `;
@@ -265,8 +255,7 @@
   }
 
   /* ============================================================
-     INIT — build overlay immediately, before DOMContentLoaded even
-     finishes other scripts, so it blocks everything visually first.
+     INIT
      ============================================================ */
   function buildGate() {
     document.documentElement.style.overflow = 'hidden';
@@ -275,8 +264,10 @@
     gateEl = document.createElement('div');
     gateEl.id = 'puzzleGate';
     gateEl.innerHTML = `
-      <div class="puzzle-card"></div>
-      <div class="puzzle-footer">DV-Piano — tap the correct answer to continue</div>
+      <div class="puzzle-inner">
+        <div class="puzzle-card"></div>
+        <div class="puzzle-footer">DV-Piano — tap the correct answer to continue</div>
+      </div>
     `;
     document.body.appendChild(gateEl);
 
